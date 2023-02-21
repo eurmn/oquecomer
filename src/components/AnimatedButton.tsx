@@ -5,7 +5,11 @@ import {Animated, Easing} from 'react-native';
 const _animatedButton = Animated.createAnimatedComponent(Button);
 
 const AnimatedButton = (
-  props: IButtonProps & {onTouch?: () => void; touchIntensity?: number},
+  props: IButtonProps & {
+    onTouch?: () => void;
+    touchIntensity?: number;
+    callBackTiming?: 'start' | 'end';
+  },
 ) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -14,6 +18,9 @@ const AnimatedButton = (
       {...props}
       style={{transform: [{scale: scaleAnim}]}}
       onTouchStart={() => {
+        if (props.callBackTiming === 'start') {
+          props.onTouch?.call(props.onTouch);
+        }
         Animated.timing(scaleAnim, {
           toValue: 1 - (props.touchIntensity || 1) * 0.07,
           duration: 70,
@@ -28,7 +35,9 @@ const AnimatedButton = (
           easing: Easing.in(Easing.ease),
           useNativeDriver: false,
         }).start(() => {
-          props.onTouch?.call(props.onTouch);
+          if ((props.callBackTiming || 'end') === 'end') {
+            props.onTouch?.call(props.onTouch);
+          }
           Animated.timing(scaleAnim, {
             toValue: 1,
             duration: 70,

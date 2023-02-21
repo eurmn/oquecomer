@@ -1,4 +1,4 @@
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {faGear, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   Box,
@@ -11,7 +11,7 @@ import {
   VStack,
 } from 'native-base';
 import React, {useState} from 'react';
-import {Places} from '../places/places';
+import {Place, Places} from '../places/places';
 import AnimatedButton from './AnimatedButton';
 import ConfigPopup from './ConfigPopup';
 import PlaceItem from './PlaceItem';
@@ -23,8 +23,16 @@ const SelectStep = (
     defaultValue?: boolean;
   },
 ) => {
+  const emptyPlace = {
+    name: '',
+    expensive: false,
+    junk: false,
+    id: -1,
+  };
+
   let [places, setPlaces] = useState(Places);
-  let [newPlace, setNewPlace] = useState('');
+  let [newPlace, setNewPlace] = useState<Place>(emptyPlace);
+  let [settingsVisible, setSettingsVisible] = useState(false);
 
   return (
     <Box flex={1} px={1} {...props}>
@@ -39,9 +47,9 @@ const SelectStep = (
         <Divider bg="trueGray.800" />
         <ScrollView>
           <VStack space={3} flex={1} py={2}>
-            <HStack alignItems="center" divider={<Divider h="4/5" />} space={2}>
+            <HStack alignItems="center" space={2}>
               <Input
-                onChangeText={text => setNewPlace(text)}
+                onChangeText={text => setNewPlace({...newPlace, name: text})}
                 mx={1}
                 py={3}
                 borderWidth={0}
@@ -49,29 +57,23 @@ const SelectStep = (
                 bg="trueGray.100"
                 flex={1}
                 fontSize="xl"
-                value={newPlace}
+                value={newPlace.name}
                 _focus={{bg: 'trueGray.100'}}
               />
+              <Divider h="2/3" orientation="vertical" />
               <AnimatedButton
                 onTouch={() => {
-                  if (newPlace.length > 0) {
-                    setPlaces([
-                      {
-                        name: newPlace,
-                        id: places.length,
-                        expensive: false,
-                        junk: false,
-                      },
-                      ...places,
-                    ]);
-                    setNewPlace('');
+                  if (newPlace.name.length > 0) {
+                    setPlaces([{...newPlace, id: places.length}, ...places]);
+                    places.unshift({...newPlace, id: places.length});
+                    setNewPlace(emptyPlace);
                   }
                 }}
-                touchIntensity={4}
-                bg="white"
+                touchIntensity={2}
                 p={0}
+                bg="white"
                 _pressed={{bg: 'white'}}>
-                <FontAwesomeIcon icon={faPlus} size={30} color="#303030" />
+                <FontAwesomeIcon icon={faPlus} size={27} color="#262626" />
               </AnimatedButton>
             </HStack>
             {places.map((place, i) => {
@@ -80,7 +82,6 @@ const SelectStep = (
           </VStack>
         </ScrollView>
       </VStack>
-      <ConfigPopup />
     </Box>
   );
 };

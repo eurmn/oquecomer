@@ -60,4 +60,4 @@ export let Places: Place[] = [
     expensive: false,
     junk: false,
   },
-];
+].sort((a, b) => (a.name > b.name ? 1 : -1));

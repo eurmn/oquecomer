@@ -14,6 +14,7 @@ import {Animated, BackHandler, Easing} from 'react-native';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import AnimatedButton from './src/components/AnimatedButton';
 import BinaryStep from './src/components/BinaryStep';
+import FinalScreen from './src/components/FinalScreen';
 import Logo from './src/components/Logo';
 import SelectStep from './src/components/SelectStep';
 
@@ -119,6 +120,8 @@ const CurrentPage = (props: {step: number}) => {
       return (
         <SelectStep question="Personalize quais estabelecimentos poderão ser escolhidos." />
       );
+    case 3:
+      return <FinalScreen />;
     default:
       return <></>;
   }
@@ -185,7 +188,7 @@ const App = () => {
           </AnimatedButton>
           <AnimatedButton
             onTouch={() => {
-              setStep(step + 1);
+              setStep(step === 3 ? 0 : step + 1);
               startPaddingAnim(50);
             }}
             bg="indigo.500"

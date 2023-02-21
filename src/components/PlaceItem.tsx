@@ -9,7 +9,6 @@ const PlaceCheckbox = (props: {place: Place; delay: number}) => {
   let [isChecked, setIsChecked] = useState(true);
 
   const scaleAnim = useRef(new Animated.Value(0)).current;
-  const opacityAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     setTimeout(() => {
@@ -58,7 +57,6 @@ const PlaceCheckbox = (props: {place: Place; delay: number}) => {
           useNativeDriver: false,
         }).start();
       }}
-      opacity={opacityAnim}
       style={{transform: [{scale: scaleAnim}]}}>
       <HStack
         shadow={isChecked ? 0 : 1}
@@ -86,7 +84,7 @@ const PlaceCheckbox = (props: {place: Place; delay: number}) => {
         <Text
           fontSize={24}
           fontWeight="bold"
-          color={'trueGray.600'}
+          color={'trueGray.800'}
           flex={1}
           textAlign="center">
           {props.place.name}
